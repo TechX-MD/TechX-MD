@@ -28,10 +28,11 @@ app.post("/pair", async (req, res) => {
         });
     }
 
-    users.set(number, true);
+users.set(number, true);
+
+delete global.PAIR_CODES?.[number];
 
 try {
-
     connect(number).catch(err=>{
         console.log("Connect Error:", err.message);
     });
