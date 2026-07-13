@@ -1,3 +1,4 @@
+
 global.owner = "263716616101"
 global.ownerName = "Kelly"
 global.botName = "TechX-MD"
