@@ -1,5 +1,9 @@
 require("./settings");
 
+const { loadPlugins } = require("./lib/loader");
+
+loadPlugins();
+
 require("./pair");
 
 console.log(`
