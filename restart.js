@@ -10,6 +10,7 @@ module.exports = {
         const number = sender.split("@")[0];
 
         console.log("OWNER CHECK:", number);
+        console.log("OWNER SET:", global.owner);
 
         if (number !== global.owner) {
             return sock.sendMessage(
