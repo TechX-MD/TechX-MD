@@ -1,0 +1,30 @@
+{
+  "name": "techx-md",
+  "version": "1.0.0",
+  "description": "TechX-MD WhatsApp Bot",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "baileys",
+    "whatsapp",
+    "bot",
+    "techx-md"
+  ],
+  "author": "Kelly",
+  "license": "MIT",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^7.0.0-rc13",
+    "axios": "^1.11.0",
+    "chalk": "^5.4.1",
+    "express": "^5.1.0",
+    "file-type": "^20.5.0",
+    "moment-timezone": "^0.6.0",
+    "node-cache": "^5.1.2",
+    "pino": "^9.7.0",
+    "qrcode-terminal": "^0.12.0"
+  }
+}

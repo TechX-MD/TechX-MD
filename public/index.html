@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TECHX-MD Pairing</title>
+
+<style>
+body{
+    background:#050505;
+    color:white;
+    font-family:Arial, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.card{
+    width:350px;
+    background:#111;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 0 25px #00ff99;
+    text-align:center;
+}
+
+h1{
+    color:#00ff99;
+}
+
+input{
+    width:90%;
+    padding:15px;
+    border-radius:10px;
+    border:none;
+    margin:15px 0;
+    background:#222;
+    color:white;
+    font-size:16px;
+}
+
+button{
+    padding:14px 25px;
+    border:none;
+    border-radius:10px;
+    background:#00ff99;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#00cc77;
+}
+
+#code{
+    margin-top:25px;
+    font-size:32px;
+    letter-spacing:8px;
+    color:#00ff99;
+}
+
+.status{
+    margin-top:15px;
+    color:#aaa;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>🚀 TECHX-MD</h1>
+<h3>Pairing Web</h3>
+
+<input id="number" placeholder="2637xxxxxxxx">
+
+<br>
+
+<button onclick="getCode()">
+GET PAIR CODE
+</button>
+
+<div class="status" id="status">
+Waiting...
+</div>
+
+<div id="code"></div>
+
+<button onclick="copyCode()" style="margin-top:20px;">
+COPY CODE
+</button>
+
+</div>
+
+
+<script>
+
+async function getCode(){
+
+let number=document.getElementById("number").value;
+
+document.getElementById("status").innerHTML="Starting pairing...";
+
+
+await fetch("/pair",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+number:number
+})
+});
+
+
+setTimeout(async()=>{
+
+let res=await fetch("/code/"+number);
+
+let data=await res.json();
+
+
+if(data.code){
+
+document.getElementById("code").innerHTML=data.code;
+
+document.getElementById("status").innerHTML=
+"✅ Code Ready";
+
+}else{
+
+document.getElementById("status").innerHTML=
+data.message;
+
+}
+
+},6000);
+
+}
+
+
+
+function copyCode(){
+
+let code=document.getElementById("code").innerText;
+
+navigator.clipboard.writeText(code);
+
+alert("Code copied!");
+
+}
+
+</script>
+
+
+</body>
+</html>
