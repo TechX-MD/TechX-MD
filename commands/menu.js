@@ -3,7 +3,7 @@ module.exports = {
 
     execute: async (sock, m) => {
 
-        const text = `
+        const caption = `
 ╭━━━〔 🤖 TECHX-MD V3 〕━━━⬣
 ┃ 👤 Owner : Kelly
 ┃ ⚡ Status : Online
@@ -11,18 +11,7 @@ module.exports = {
 ┃ 🌐 https://techx-md.onrender.com
 ╰━━━━━━━━━━━━━━━━⬣
 
-╭━━〔 📋 COMMANDS 〕━━⬣
-┃ ⚡ .main
-┃ 👥 .group
-┃ 👑 .owner
-┃ 🛠️ .tools
-┃ 🤖 .ai
-┃ 🎵 .download
-┃ 🎨 .media
-┃ 🎮 .games
-╰━━━━━━━━━━━━━━━━⬣
-
-🚀 TECHX-MD WhatsApp Automation
+🚀 Select a category below
 `;
 
         await sock.sendMessage(
@@ -31,7 +20,35 @@ module.exports = {
                 image: {
                     url: "https://up6.cc/2026/07/178402176851411.jpeg"
                 },
-                caption: text
+                caption: caption,
+
+                footer: "TECHX-MD V3",
+
+                buttons: [
+                    {
+                        buttonId: ".main",
+                        buttonText: {
+                            displayText: "⚡ MAIN"
+                        },
+                        type: 1
+                    },
+                    {
+                        buttonId: ".group",
+                        buttonText: {
+                            displayText: "👥 GROUP"
+                        },
+                        type: 1
+                    },
+                    {
+                        buttonId: ".owner",
+                        buttonText: {
+                            displayText: "👑 OWNER"
+                        },
+                        type: 1
+                    }
+                ],
+
+                headerType: 4
             },
             {
                 quoted: m
