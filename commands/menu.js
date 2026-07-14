@@ -28,7 +28,10 @@ module.exports = {
         await sock.sendMessage(
             m.key.remoteJid,
             {
-                text: text
+                image: {
+                    url: "https://up6.cc/2026/07/178402176851411.jpeg"
+                },
+                caption: text
             },
             {
                 quoted: m
