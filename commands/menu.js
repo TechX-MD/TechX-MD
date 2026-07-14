@@ -11,7 +11,22 @@ module.exports = {
 ┃ 🌐 https://techx-md.onrender.com
 ╰━━━━━━━━━━━━━━━━⬣
 
-🚀 Select a category below
+╭━━〔 📋 SELECT CATEGORY 〕━━⬣
+┃
+┃ ⚡ .main
+┃ 👥 .group
+┃ 👑 .owner
+┃ 🛠️ .tools
+┃ 🤖 .ai
+┃ 🎵 .download
+┃ 🎨 .media
+┃ 🎮 .games
+┃ 🔐 .security
+┃ 💎 .premium
+┃
+╰━━━━━━━━━━━━━━━━⬣
+
+🚀 TECHX-MD V3
 `;
 
         await sock.sendMessage(
@@ -20,39 +35,7 @@ module.exports = {
                 image: {
                     url: "https://up6.cc/2026/07/178402176851411.jpeg"
                 },
-                caption: text,
-
-                footer: "TECHX-MD V3",
-
-                title: "TECHX-MD MENU",
-
-                sections: [
-                    {
-                        title: "COMMAND CATEGORIES",
-                        rows: [
-                            {
-                                title: "⚡ MAIN COMMANDS",
-                                rowId: ".main",
-                                description: "Basic bot commands"
-                            },
-                            {
-                                title: "👥 GROUP COMMANDS",
-                                rowId: ".group",
-                                description: "Group management"
-                            },
-                            {
-                                title: "👑 OWNER COMMANDS",
-                                rowId: ".owner",
-                                description: "Owner controls"
-                            },
-                            {
-                                title: "🛠 TOOLS",
-                                rowId: ".tools",
-                                description: "Useful tools"
-                            }
-                        ]
-                    }
-                ]
+                caption: text
             },
             {
                 quoted: m
