@@ -3,20 +3,16 @@ module.exports = {
 
     execute: async (sock, m) => {
 
-        const sender =
-            m.key.participant ||
-            m.key.remoteJid;
+        const sender = (m.key.participant || m.key.remoteJid || "").split("@")[0];
 
-        const number = sender.split("@")[0];
+        console.log("SENDER:", sender);
+        console.log("OWNER:", global.owner);
 
-        console.log("OWNER CHECK:", number);
-        console.log("OWNER SET:", global.owner);
-
-        if (number !== global.owner) {
+        if (sender !== global.owner) {
             return sock.sendMessage(
                 m.key.remoteJid,
                 {
-                    text: "❌ Owner only"
+                    text: `❌ Owner only\n\nSender: ${sender}\nOwner: ${global.owner}`
                 },
                 {
                     quoted: m
@@ -27,16 +23,13 @@ module.exports = {
         await sock.sendMessage(
             m.key.remoteJid,
             {
-                text: "🔄 Restarting TECHX-MD..."
+                text: "🔄 Restarting..."
             },
             {
                 quoted: m
             }
         );
 
-        setTimeout(() => {
-            process.exit(0);
-        }, 2000);
-
+        process.exit(0);
     }
 };
