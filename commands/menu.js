@@ -3,7 +3,7 @@ module.exports = {
 
     execute: async (sock, m) => {
 
-        const caption = `
+        const text = `
 ╭━━━〔 🤖 TECHX-MD V3 〕━━━⬣
 ┃ 👤 Owner : Kelly
 ┃ ⚡ Status : Online
@@ -20,35 +20,39 @@ module.exports = {
                 image: {
                     url: "https://up6.cc/2026/07/178402176851411.jpeg"
                 },
-                caption: caption,
+                caption: text,
 
                 footer: "TECHX-MD V3",
 
-                buttons: [
-                    {
-                        buttonId: ".main",
-                        buttonText: {
-                            displayText: "⚡ MAIN"
-                        },
-                        type: 1
-                    },
-                    {
-                        buttonId: ".group",
-                        buttonText: {
-                            displayText: "👥 GROUP"
-                        },
-                        type: 1
-                    },
-                    {
-                        buttonId: ".owner",
-                        buttonText: {
-                            displayText: "👑 OWNER"
-                        },
-                        type: 1
-                    }
-                ],
+                title: "TECHX-MD MENU",
 
-                headerType: 4
+                sections: [
+                    {
+                        title: "COMMAND CATEGORIES",
+                        rows: [
+                            {
+                                title: "⚡ MAIN COMMANDS",
+                                rowId: ".main",
+                                description: "Basic bot commands"
+                            },
+                            {
+                                title: "👥 GROUP COMMANDS",
+                                rowId: ".group",
+                                description: "Group management"
+                            },
+                            {
+                                title: "👑 OWNER COMMANDS",
+                                rowId: ".owner",
+                                description: "Owner controls"
+                            },
+                            {
+                                title: "🛠 TOOLS",
+                                rowId: ".tools",
+                                description: "Useful tools"
+                            }
+                        ]
+                    }
+                ]
             },
             {
                 quoted: m
