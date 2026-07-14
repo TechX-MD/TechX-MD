@@ -1,3 +1,5 @@
+
+console.log(m.key);
 module.exports = {
     name: "restart",
 
