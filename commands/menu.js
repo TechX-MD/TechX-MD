@@ -1,37 +1,41 @@
 module.exports = {
     name: "menu",
-    description: "Show bot menu",
 
-    async execute(sock, m) {
+    execute: async (sock, m) => {
 
-        const menu = `
-╭━━━〔 🤖 TECHX-MD 〕━━━⬣
-┃ 👤 Owner : ${global.ownerName}
+        const text = `
+╭━━━〔 🤖 TECHX-MD V3 〕━━━⬣
+┃ 👤 Owner : Kelly
 ┃ ⚡ Status : Online
-┃ 📌 Prefix : ${global.prefix}
+┃ 📌 Prefix : .
+┃ 🌐 https://techx-md.onrender.com
 ╰━━━━━━━━━━━━━━━━⬣
 
-╭━━〔 MAIN 〕━━⬣
-┃ 🏓 .ping
-┃ 📋 .menu
-┃ ❤️ .alive
-╰━━━━━━━━━━━━⬣
+╭━━〔 📋 COMMANDS 〕━━⬣
+┃ ⚡ .main
+┃ 👥 .group
+┃ 👑 .owner
+┃ 🛠️ .tools
+┃ 🤖 .ai
+┃ 🎵 .download
+┃ 🎨 .media
+┃ 🎮 .games
+╰━━━━━━━━━━━━━━━━⬣
 
-╭━━〔 GROUP 〕━━⬣
-┃ 👥 .tagall
-┃ ➕ .add
-┃ ➖ .kick
-┃ ⭐ .promote
-┃ ⬇️ .demote
-╰━━━━━━━━━━━━⬣
-
-© TechX-MD
+🚀 TECHX-MD WhatsApp Automation
 `;
 
         await sock.sendMessage(
             m.key.remoteJid,
-            { text: menu },
-            { quoted: m }
+            {
+                image: {
+                    url: "https://your-image-link.com/logo.jpg"
+                },
+                caption: text
+            },
+            {
+                quoted: m
+            }
         );
     }
 };

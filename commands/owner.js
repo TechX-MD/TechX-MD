@@ -1,18 +1,30 @@
 module.exports = {
     name: "owner",
 
-    execute: async (sock, m) => {
+    execute: async(sock,m)=>{
 
-        const owner = global.owner;
+        const text = `
+╭━━〔 👑 OWNER COMMANDS 〕━━⬣
+┃ 🔄 .restart
+┃ 📢 .broadcast
+┃ ⚙️ .eval
+┃ 🖥 .exec
+┃ 🔒 .block
+┃ 🔓 .unblock
+┃ 🔄 .update
+┃ 📂 .backup
+┃ 🧹 .clear
+┃ 🐞 .debug
+┃ 📜 .logs
+╰━━━━━━━━━━━━━━━━⬣
+
+Owner: Kelly
+`;
 
         await sock.sendMessage(
             m.key.remoteJid,
-            {
-                text: `👑 Owner Number:\nhttps://wa.me/${owner}`
-            },
-            {
-                quoted: m
-            }
+            {text},
+            {quoted:m}
         );
 
     }
