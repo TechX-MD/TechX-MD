@@ -28,14 +28,12 @@ module.exports = {
         await sock.sendMessage(
             m.key.remoteJid,
             {
-                image: {
-                    url: "https://your-image-link.com/logo.jpg"
-                },
-                caption: text
+                text: text
             },
             {
                 quoted: m
             }
         );
+
     }
 };
