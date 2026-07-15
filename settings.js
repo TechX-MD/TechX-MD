@@ -8,6 +8,10 @@ global.sessionName = "session"
 global.autoRead = false
 global.autoTyping = false
 global.autoRecording = false
+global.autoOnline = true
+global.autoReact = true
+global.reactEmoji = "🔥"
+
 
 global.packname = "TechX-MD"
 global.author = "Kelly"

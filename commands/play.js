@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const axios = require("axios");
 
 module.exports = {
@@ -43,18 +45,21 @@ module.exports = {
 
             const data = api.data;
 
-            await sock.sendMessage(
-                m.key.remoteJid,
-                {
-                    audio: {
-                        url: data.audio
-                    },
-                    mimetype: "audio/mpeg",
-                    fileName: `${data.title}.mp3`
-                },
-                { quoted: m }
-            );
 
+const filePath = path.join(
+    "/data/data/com.termux/files/home/TECHX-API/downloads",
+    data.audio.split("/").pop()
+);
+
+await sock.sendMessage(
+    m.key.remoteJid,
+    {
+        audio: fs.readFileSync(filePath),
+        mimetype: "audio/mpeg",
+        fileName: `${data.title}.mp3`
+    },
+    { quoted: m }
+);
         } catch (err) {
 
             console.log(err);
