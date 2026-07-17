@@ -21,10 +21,11 @@ module.exports = {
 
         try {
 
-            const { data } = await axios.get(
-                `https://techx-ap.onrender.com/weather?city=${city}`
-            );
-
+console.log("WEATHER CITY:", city);
+console.log("WEATHER RESPONSE:", data);
+ const { data } = await axios.get(
+    `https://techx-ap.onrender.com/weather?city=${encodeURIComponent(city)}`
+);           
 
             if (!data.success) {
                 return sock.sendMessage(

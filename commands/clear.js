@@ -1,16 +1,13 @@
 module.exports = {
-    name: "restart",
+    name: "clear",
 
     execute: async (sock, m) => {
 
-        const sender = m.key.participant || m.key.remoteJid;
-        const owner = global.owner + "@s.whatsapp.net";
-
-        if (sender !== owner) {
+        if (!m.key.fromMe) {
             return sock.sendMessage(
                 m.key.remoteJid,
                 {
-                    text: "❌ This command is only for the bot owner."
+                    text: "❌ Owner only command."
                 },
                 {
                     quoted: m
@@ -19,20 +16,23 @@ module.exports = {
         }
 
 
+        console.log(
+            "\x1Bc"
+        );
+
+
         await sock.sendMessage(
             m.key.remoteJid,
             {
-                text: "🔄 Restarting TECHX-MD..."
+                text:
+`🧹 Console cleared
+
+🚀 TECHX-MD PRO`
             },
             {
                 quoted: m
             }
         );
-
-
-        setTimeout(() => {
-            process.exit(0);
-        }, 2000);
 
     }
 };

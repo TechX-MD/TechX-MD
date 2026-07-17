@@ -1,14 +1,14 @@
 module.exports = {
-    name: "ping",
+    name: "speed",
 
     execute: async (sock, m) => {
 
         const start = Date.now();
 
-        const sent = await sock.sendMessage(
+        const msg = await sock.sendMessage(
             m.key.remoteJid,
             {
-                text: "🏓 Checking speed..."
+                text: "⚡ Testing speed..."
             },
             {
                 quoted: m
@@ -23,15 +23,18 @@ module.exports = {
                 text: `
 ╭━━━〔 ⚡ TECHX-MD PRO 〕━━━⬣
 ┃
-┃ 🏓 Pong!
-┃ ⚡ Speed: ${end - start} ms
-┃ 🟢 Status: Online
-┃ 🤖 Version: V3 Pro
-┃ 👤 Owner: Kelly
+┃ 🚀 Speed Test Complete
 ┃
-┃ 🚀 Fast • Stable • Powerful
+┃ ⚡ Response : ${end - start} ms
+┃ 🟢 Status   : Online
+┃ 🤖 Engine   : Baileys
+┃ 📡 Server   : Active
+┃
+┃ 🔥 Fast & Stable
 ┃
 ╰━━━━━━━━━━━━━━━━⬣
+
+🚀 TECHX-MD V3 PRO
                 `
             },
             {
