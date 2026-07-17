@@ -11,6 +11,7 @@ module.exports = {
 ┃ 🌐 https://techx-md.onrender.com
 ╰━━━━━━━━━━━━━━━━⬣
 
+
 ╭━━〔 📋 SELECT CATEGORY 〕━━⬣
 ┃
 ┃ ⚡ .main
@@ -26,16 +27,12 @@ module.exports = {
 ┃
 ╰━━━━━━━━━━━━━━━━⬣
 
-🚀 TECHX-MD V3
-`;
+🚀 TECHX-MD V3`;
 
         await sock.sendMessage(
             m.key.remoteJid,
             {
-                image: {
-                    url: "https://up6.cc/2026/07/178402176851411.jpeg"
-                },
-                caption: text
+                text: text
             },
             {
                 quoted: m
