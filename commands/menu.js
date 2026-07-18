@@ -27,17 +27,28 @@ module.exports = {
 ┃
 ╰━━━━━━━━━━━━━━━━⬣
 
+
+╭━━━〔 🚧 OTHER MENU 〕━━━⬣
+┃
+┃ 🚧 COMING SOON
+┃
+┃ 🔜 More Features Coming Soon
+┃ 🔜 AI Tools
+┃ 🔜 Web Tools
+┃ 🔜 Extra Commands
+┃
+╰━━━━━━━━━━━━━━⬣
 🚀 TECHX-MD V3`;
 
-        await sock.sendMessage(
-            m.key.remoteJid,
-            {
-                text: text
-            },
-            {
-                quoted: m
-            }
-        );
-
+await sock.sendMessage(
+    m.key.remoteJid,
+    {
+        image: {
+            url: "https://up6.cc/2026/07/178402176851411.jpeg"
+        },
+        caption: text
+    },
+    {
+        quoted: m
     }
-};
+);

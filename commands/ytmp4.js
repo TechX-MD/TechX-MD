@@ -11,7 +11,7 @@ module.exports = {
             return sock.sendMessage(
                 m.key.remoteJid,
                 {
-                    text: "❌ Send YouTube link\n\nExample:\n.ytmp4 https://youtu.be/xxxxx"
+                    text: "❌ Example:\n.ytmp4 https://youtu.be/xxxx"
                 },
                 { quoted: m }
             );
@@ -22,7 +22,7 @@ module.exports = {
             await sock.sendMessage(
                 m.key.remoteJid,
                 {
-                    text: "⏳ Downloading video..."
+                    text: "⏳ Downloading MP4..."
                 },
                 { quoted: m }
             );
@@ -32,16 +32,30 @@ module.exports = {
             `https://techx-ap.onrender.com/ytmp4?url=${encodeURIComponent(url)}`;
 
 
-            const response = await axios.get(api, {
-                responseType: "arraybuffer"
+            const res = await axios.get(api, {
+                responseType: "arraybuffer",
+                maxContentLength: Infinity,
+                maxBodyLength: Infinity
             });
+
+
+            if (res.headers["content-type"]?.includes("application/json")) {
+                return sock.sendMessage(
+                    m.key.remoteJid,
+                    {
+                        text: Buffer.from(res.data).toString()
+                    },
+                    { quoted: m }
+                );
+            }
 
 
             await sock.sendMessage(
                 m.key.remoteJid,
                 {
-                    video: Buffer.from(response.data),
-                    caption: "🎬 Downloaded by TECHX-MD"
+                    video: Buffer.from(res.data),
+                    mimetype: "video/mp4",
+                    caption: "🎬 TECHX-MD YTMP4"
                 },
                 { quoted: m }
             );
@@ -49,10 +63,12 @@ module.exports = {
 
         } catch (err) {
 
+            console.log(err);
+
             await sock.sendMessage(
                 m.key.remoteJid,
                 {
-                    text: "❌ Download failed\n" + err.message
+                    text: "❌ Error: " + err.message
                 },
                 { quoted: m }
             );
