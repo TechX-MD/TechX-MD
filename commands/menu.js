@@ -40,15 +40,19 @@ module.exports = {
 ╰━━━━━━━━━━━━━━⬣
 🚀 TECHX-MD V3`;
 
-await sock.sendMessage(
-    m.key.remoteJid,
-    {
-        image: {
-            url: "https://up6.cc/2026/07/178402176851411.jpeg"
+    await sock.sendMessage(
+        m.key.remoteJid,
+        {
+            image: {
+                url: "https://up6.cc/2026/07/178402176851411.jpeg"
+            },
+            caption: text
         },
-        caption: text
-    },
-    {
-        quoted: m
+        {
+            quoted: m
+        }
+    );
+
     }
-);
+
+};
