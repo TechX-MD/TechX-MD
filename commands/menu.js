@@ -24,6 +24,7 @@ module.exports = {
 ┃ 🎮 .games
 ┃ 🔐 .security
 ┃ 💎 .premium
+┃ 🔌 .plugins
 ┃
 ╰━━━━━━━━━━━━━━━━⬣
 
