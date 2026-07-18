@@ -11,14 +11,11 @@ module.exports = {
             return sock.sendMessage(
                 m.key.remoteJid,
                 {
-                    text: "❌ Send YouTube link\n\nExample:\n.ytmp4 https://youtube.com/watch?v=xxxx"
+                    text: "❌ Send YouTube link\n\nExample:\n.ytmp4 https://youtu.be/xxxxx"
                 },
-                {
-                    quoted: m
-                }
+                { quoted: m }
             );
         }
-
 
         try {
 
@@ -27,9 +24,7 @@ module.exports = {
                 {
                     text: "⏳ Downloading video..."
                 },
-                {
-                    quoted: m
-                }
+                { quoted: m }
             );
 
 
@@ -37,34 +32,18 @@ module.exports = {
             `https://techx-ap.onrender.com/ytmp4?url=${encodeURIComponent(url)}`;
 
 
-            const res = await axios.get(api);
-
-
-            if (!res.data || !res.data.url) {
-                return sock.sendMessage(
-                    m.key.remoteJid,
-                    {
-                        text: "❌ Video download failed."
-                    },
-                    {
-                        quoted: m
-                    }
-                );
-            }
+            const response = await axios.get(api, {
+                responseType: "arraybuffer"
+            });
 
 
             await sock.sendMessage(
                 m.key.remoteJid,
                 {
-                    video: {
-                        url: res.data.url
-                    },
-                    caption:
-                    "🎬 Downloaded by TECHX-MD"
+                    video: Buffer.from(response.data),
+                    caption: "🎬 Downloaded by TECHX-MD"
                 },
-                {
-                    quoted: m
-                }
+                { quoted: m }
             );
 
 
@@ -73,12 +52,9 @@ module.exports = {
             await sock.sendMessage(
                 m.key.remoteJid,
                 {
-                    text:
-                    "❌ Error: " + err.message
+                    text: "❌ Download failed\n" + err.message
                 },
-                {
-                    quoted: m
-                }
+                { quoted: m }
             );
 
         }
