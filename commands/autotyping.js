@@ -1,42 +1,41 @@
 const fs = require("fs");
 
-const SETTINGS_FILE = "./database/settings.json";
+const FILE = "./database/settings.json";
 
 module.exports = {
     name: "autotyping",
 
     execute: async (sock, m, args) => {
 
-        const settings = JSON.parse(
-            fs.readFileSync(SETTINGS_FILE, "utf8")
+        let settings = JSON.parse(
+            fs.readFileSync(FILE, "utf8")
         );
 
-        const option = args[0];
-
-        if (!option || !["on", "off"].includes(option)) {
+        if (args[0] === "on") {
+            settings.autotyping = true;
+        } else if (args[0] === "off") {
+            settings.autotyping = false;
+        } else {
             return sock.sendMessage(
                 m.key.remoteJid,
                 {
-                    text: "Use:\n.autotyping on\n.autotyping off"
+                    text: "Example:\n.autotyping on\n.autotyping off"
                 },
                 { quoted: m }
             );
         }
 
-        settings.autotyping = option === "on";
-
         fs.writeFileSync(
-            SETTINGS_FILE,
+            FILE,
             JSON.stringify(settings, null, 2)
         );
 
         await sock.sendMessage(
             m.key.remoteJid,
             {
-                text: `✅ Auto Typing ${option.toUpperCase()}`
+                text: `✅ AutoTyping ${args[0].toUpperCase()}`
             },
             { quoted: m }
         );
-
     }
 };
