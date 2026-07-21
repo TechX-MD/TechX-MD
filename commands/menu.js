@@ -2,7 +2,7 @@ module.exports = {
     name: "menu",
 
     execute: async (sock, m) => {
-
+console.log("MENU COMMAND EXECUTED");
         const text = `
 ╭━━━〔 🤖 TECHX-MD V3 〕━━━⬣
 ┃ 👤 Owner : Kelly
