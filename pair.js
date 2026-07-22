@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 const users = new Map();
-
+const activeConnections = new Map();
 app.post("/pair", async (req, res) => {
 
     let number = req.body.number;
@@ -21,6 +21,13 @@ app.post("/pair", async (req, res) => {
 
     number = number.replace(/[^0-9]/g, "");
 
+
+if (activeConnections.has(number)) {
+    return res.json({
+        status:false,
+        message:"Already connected"
+    });
+}
     if (users.has(number)) {
         return res.json({
             status: false,
@@ -28,13 +35,21 @@ app.post("/pair", async (req, res) => {
         });
     }
 
+activeConnections.set(number, true);
 users.set(number, true);
 
 
 try {
-    connect(number).catch(err=>{
-        console.log("Connect Error:", err.message);
-    });
+
+
+connect(number)
+.then(()=>{
+    console.log("Connection started:", number);
+})
+.catch(err=>{
+    activeConnections.delete(number);
+    console.log("Connect Error:", err.message);
+});
 
     return res.json({
         status:true,
