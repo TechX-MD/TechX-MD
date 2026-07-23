@@ -19,10 +19,9 @@ module.exports = {
 
         try {
 
-            const res = await api.get(
-                `/google?query=${encodeURIComponent(query)}`
-            );
-
+const res = await api.get(
+    `/google?q=${encodeURIComponent(query)}`
+);
             const data = res.data;
 
             await sock.sendMessage(
