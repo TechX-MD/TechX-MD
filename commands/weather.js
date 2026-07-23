@@ -19,19 +19,32 @@ module.exports = {
 
         try {
 
-            const res = await api.get(
-                `/weather?city=${encodeURIComponent(city)}`
-            );
 
-            await sock.sendMessage(
-                m.chat,
-                {
-                    text:
-                    `🌦️ TECHX WEATHER\n\n${JSON.stringify(res.data, null, 2)}`
-                },
-                { quoted: m }
-            );
 
+const res = await api.get(
+    `/weather?city=${encodeURIComponent(city)}`
+);
+
+const data = res.data;
+
+await sock.sendMessage(
+    m.chat,
+    {
+        text:
+`╭━━〔 🌦️ WEATHER REPORT 〕━━⬣
+┃
+┃ 📍 City: ${data.city}
+┃ 🌡️ Temperature: ${data.temperature}
+┃ 💧 Humidity: ${data.humidity}
+┃ 🌬️ Wind: ${data.wind}
+┃ ☁️ Condition: ${data.condition}
+┃
+╰━━━━━━━━━━━━━━━━⬣
+
+🚀 TECHX-MD V3`
+    },
+    { quoted: m }
+);
         } catch (err) {
 
             console.log("WEATHER ERROR:", err.message);
