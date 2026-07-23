@@ -1,3 +1,9 @@
+
+
+
+
+
+
 const { isPremium } = require("../lib/premium");
 
 module.exports = {
@@ -5,7 +11,17 @@ module.exports = {
 
     execute: async (sock, m) => {
 
-        const number = m.sender.replace(/[^0-9]/g, "");
+        const number =
+            (m.sender || "")
+            .split(":")[0]
+            .replace("@s.whatsapp.net", "")
+            .replace("@lid", "")
+            .replace(/[^0-9]/g, "");
+
+        console.log(
+            "PREMIUM CHECK NUMBER:",
+            number
+        );
 
         const status = isPremium(number);
 
@@ -13,11 +29,10 @@ module.exports = {
             m.chat,
             {
                 text: status
-                    ? "👑 You are a Premium User."
-                    : "❌ You are not a Premium User."
+                ? "👑 You are a Premium User."
+                : "❌ You are not a Premium User."
             },
             { quoted: m }
         );
-
     }
 };
