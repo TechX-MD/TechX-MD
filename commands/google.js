@@ -77,3 +77,15 @@ ${list}
             console.log("GOOGLE ERROR:", err.message);
 
            
+            await sock.sendMessage(
+                m.chat,
+                {
+                    text: "❌ Google search failed."
+                },
+                { quoted: m }
+            );
+
+        }
+
+    }
+};
