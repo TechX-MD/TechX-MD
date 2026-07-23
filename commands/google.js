@@ -11,7 +11,7 @@ module.exports = {
             return sock.sendMessage(
                 m.chat,
                 {
-                    text: "🔍 Usage:\n.google WhatsApp bot"
+                    text: "🔍 Usage:\n.google latest AI news"
                 },
                 { quoted: m }
             );
@@ -19,10 +19,40 @@ module.exports = {
 
         try {
 
-const res = await api.get(
-    `/google?q=${encodeURIComponent(query)}`
-);
+            const res = await api.get(
+                `/google?q=${encodeURIComponent(query)}`
+            );
+
             const data = res.data;
+
+            if (!data.success) {
+                return sock.sendMessage(
+                    m.chat,
+                    {
+                        text: `❌ ${data.message}`
+                    },
+                    { quoted: m }
+                );
+            }
+
+            if (!data.results || data.results.length === 0) {
+                return sock.sendMessage(
+                    m.chat,
+                    {
+                        text: "❌ No search results found."
+                    },
+                    { quoted: m }
+                );
+            }
+
+            const list = data.results
+                .map((r, i) =>
+`${i + 1}. ${r.title}
+
+🌐 ${r.link}
+
+📝 ${r.snippet}`)
+                .join("\n\n");
 
             await sock.sendMessage(
                 m.chat,
@@ -33,8 +63,7 @@ const res = await api.get(
 ┃ 🔎 Query:
 ┃ ${query}
 ┃
-┃ 📄 Result:
-┃ ${JSON.stringify(data, null, 2)}
+${list}
 ┃
 ╰━━━━━━━━━━━━━━━━⬣
 
@@ -47,15 +76,4 @@ const res = await api.get(
 
             console.log("GOOGLE ERROR:", err.message);
 
-            await sock.sendMessage(
-                m.chat,
-                {
-                    text: "❌ Google search failed."
-                },
-                { quoted: m }
-            );
-
-        }
-
-    }
-};
+           
