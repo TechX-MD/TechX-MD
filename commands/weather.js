@@ -1,4 +1,4 @@
-const axios = require("axios");
+const api = require("../lib/api");
 
 module.exports = {
     name: "weather",
@@ -9,77 +9,39 @@ module.exports = {
 
         if (!city) {
             return sock.sendMessage(
-                m.key.remoteJid,
+                m.chat,
                 {
-                    text: "❌ Shandisa:\n.weather Harare"
+                    text: "🌦️ Usage:\n.weather Harare"
                 },
-                {
-                    quoted: m
-                }
+                { quoted: m }
             );
         }
 
         try {
 
-console.log("WEATHER CITY:", city);
-console.log("WEATHER RESPONSE:", data);
- const { data } = await axios.get(
-    `https://techx-ap.onrender.com/weather?city=${encodeURIComponent(city)}`
-);           
-
-            if (!data.success) {
-                return sock.sendMessage(
-                    m.key.remoteJid,
-                    {
-                        text: "❌ City not found"
-                    },
-                    {
-                        quoted: m
-                    }
-                );
-            }
-
-
-            const text = `
-🌤️ *WEATHER REPORT*
-
-📍 City: ${data.city}
-
-🌡️ Temperature: ${data.temperature}
-💧 Humidity: ${data.humidity}
-🌬️ Wind: ${data.wind}
-☁️ Condition: ${data.condition}
-
-🚀 TECHX-MD
-            `;
-
-
-            await sock.sendMessage(
-                m.key.remoteJid,
-                {
-                    text
-                },
-                {
-                    quoted: m
-                }
+            const res = await api.get(
+                `/weather?city=${encodeURIComponent(city)}`
             );
 
+            await sock.sendMessage(
+                m.chat,
+                {
+                    text:
+                    `🌦️ TECHX WEATHER\n\n${JSON.stringify(res.data, null, 2)}`
+                },
+                { quoted: m }
+            );
 
         } catch (err) {
 
-            console.log(
-                "WEATHER ERROR:",
-                err.message
-            );
+            console.log("WEATHER ERROR:", err.message);
 
             await sock.sendMessage(
-                m.key.remoteJid,
+                m.chat,
                 {
-                    text: "❌ Weather service error"
+                    text: "❌ Weather service failed."
                 },
-                {
-                    quoted: m
-                }
+                { quoted: m }
             );
 
         }
