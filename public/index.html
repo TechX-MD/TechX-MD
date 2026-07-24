@@ -4,11 +4,9 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>TECHX-MD Pairing</title>
-
 
 <style>
 
@@ -16,15 +14,14 @@
 box-sizing:border-box;
 }
 
-
 body{
 
 margin:0;
 min-height:100vh;
 
 display:flex;
-align-items:center;
 justify-content:center;
+align-items:center;
 
 background:#050510;
 
@@ -37,23 +34,22 @@ padding:20px;
 }
 
 
-
 .card{
 
 width:100%;
 max-width:430px;
 
-background:rgba(15,15,25,.85);
-
-border:1px solid cyan;
-
-border-radius:30px;
+background:#111827;
 
 padding:30px;
 
+border-radius:30px;
+
+border:1px solid cyan;
+
 box-shadow:
 0 0 25px cyan,
-inset 0 0 20px rgba(0,255,255,.1);
+0 0 50px rgba(0,255,255,.2);
 
 }
 
@@ -62,6 +58,7 @@ inset 0 0 20px rgba(0,255,255,.1);
 .logo{
 
 font-size:35px;
+font-weight:bold;
 
 color:#00ffff;
 
@@ -79,15 +76,16 @@ color:#aaa;
 
 
 
-.box{
+.box,
+.channel{
 
 margin-top:25px;
 
-background:#090914;
-
-border-radius:20px;
+background:#080b14;
 
 padding:20px;
+
+border-radius:20px;
 
 border:1px solid rgba(0,255,255,.3);
 
@@ -95,113 +93,11 @@ border:1px solid rgba(0,255,255,.3);
 
 
 
-.input{
-
-display:flex;
-
-align-items:center;
-
-background:#000;
-
-border-radius:50px;
-
-border:1px solid cyan;
-
-padding:10px;
-
-}
-
-
-
-.code{
-
-color:#00ffff;
-
-font-size:18px;
-
-}
-
-
-
-input{
-
-width:100%;
-
-background:none;
-
-border:none;
-
-outline:none;
-
-color:white;
-
-font-size:18px;
-
-}
-
-
-
-button{
-
-width:100%;
-
-margin-top:20px;
-
-padding:16px;
-
-border:none;
-
-border-radius:50px;
-
-font-size:18px;
-
-font-weight:bold;
-
-background:#00ffff;
-
-cursor:pointer;
-
-box-shadow:0 0 20px cyan;
-
-}
-
-
-
-button:active{
-
-transform:scale(.95);
-
-}
-
-
-
-#paircode{
-
-font-size:38px;
-
-letter-spacing:8px;
-
-color:#00ff99;
-
-margin-top:20px;
-
-text-shadow:0 0 20px #00ff99;
-
-}
-
-
-
 .channel{
 
-margin-top:25px;
+background:#20001c;
 
-background:#160016;
-
-border:1px solid #ff00aa;
-
-padding:18px;
-
-border-radius:20px;
+border-color:#ff00aa;
 
 }
 
@@ -211,13 +107,13 @@ border-radius:20px;
 
 display:block;
 
-margin-top:15px;
-
-padding:12px;
-
-border-radius:50px;
+text-align:center;
 
 background:#ff00aa;
+
+padding:14px;
+
+border-radius:50px;
 
 color:white;
 
@@ -229,9 +125,98 @@ font-weight:bold;
 
 
 
+input{
+
+width:100%;
+
+padding:15px;
+
+margin-top:10px;
+
+background:#000;
+
+border:1px solid cyan;
+
+border-radius:50px;
+
+color:white;
+
+font-size:18px;
+
+outline:none;
+
+}
+
+
+
+button{
+
+width:100%;
+
+padding:15px;
+
+margin-top:15px;
+
+border:none;
+
+border-radius:50px;
+
+font-size:18px;
+
+font-weight:bold;
+
+background:#00ffff;
+
+color:black;
+
+cursor:pointer;
+
+box-shadow:0 0 20px cyan;
+
+}
+
+
+
+button:hover{
+
+transform:scale(1.03);
+
+}
+
+
+
+#status{
+
+text-align:center;
+
+color:#00ffff;
+
+}
+
+
+
+#paircode{
+
+text-align:center;
+
+font-size:40px;
+
+letter-spacing:8px;
+
+color:#00ff99;
+
+text-shadow:0 0 20px #00ff99;
+
+margin-top:20px;
+
+}
+
+
+
 </style>
 
 </head>
+
 
 
 <body>
@@ -252,34 +237,61 @@ Secure WhatsApp Pairing Interface
 
 
 
-<div class="box">
+<div class="channel">
 
 
 <h3>
-📱 WhatsApp Pairing
+📢 Channel Required
 </h3>
 
 
-
-<div class="input">
-
-<span class="code">
-+263
-</span>
+<p>
+⚠️ Join WhatsApp channel first before pairing
+</p>
 
 
-<input 
-id="number"
-value="712345678"
-placeholder="7xxxxxxxxx">
+<a href="https://whatsapp.com/channel/0029Vb8QAZyAe5VyFTerO82q"
+target="_blank">
+
+🔗 Join Channel First
+
+</a>
+
+
+<button onclick="verifyChannel()">
+
+✅ I Have Joined
+
+</button>
+
 
 </div>
 
 
 
-<button onclick="pair()">
 
-⚡ Generate Code
+
+<div class="box">
+
+
+<h3>
+📱 Enter WhatsApp Number
+</h3>
+
+
+
+<input 
+id="number"
+placeholder="263xxxxxxxxx">
+
+
+
+<button 
+id="pairButton"
+onclick="pair()"
+style="display:none">
+
+⚡ Generate Pair Code
 
 </button>
 
@@ -291,40 +303,12 @@ placeholder="7xxxxxxxxx">
 <div id="paircode"></div>
 
 
-</div>
-
-
-
-
-
-<div class="channel">
-
-
-<h3>
-📢 Channel Requirement
-</h3>
-
-
-<p>
-⛓️ Join first before pairing
-</p>
-
-
-
-<a href="https://whatsapp.com/channel/0029Vb8QAZyAe5VyFTerO82q"
-target="_blank">
-
-🔗 Join Channel
-
-</a>
-
 
 </div>
 
 
 
 </div>
-
 
 
 
@@ -332,31 +316,63 @@ target="_blank">
 <script>
 
 
+let verified=false;
+
+
+
+function verifyChannel(){
+
+
+verified=true;
+
+
+document.getElementById("pairButton").style.display="block";
+
+
+document.getElementById("status").innerHTML=
+"✅ Channel verified";
+
+
+}
+
+
+
+
+
 async function pair(){
 
 
-let input =
-document.getElementById("number").value;
+if(!verified){
+
+alert("Please join channel first");
+
+return;
+
+}
+
 
 
 let number =
-"263"+input.replace(/^0+/,"");
+document.getElementById("number").value.trim();
 
 
 
-let status =
-document.getElementById("status");
+if(!number){
+
+alert("Enter WhatsApp number");
+
+return;
+
+}
 
 
-let code =
-document.getElementById("paircode");
+
+number = number.replace(/\D/g,"");
 
 
 
-status.innerHTML =
-"⏳ Starting secure pairing...";
-
-code.innerHTML="";
+document.getElementById("status").innerHTML =
+"⏳ Generating pair code...";
 
 
 
@@ -399,11 +415,13 @@ await res.json();
 if(data.code){
 
 
-code.innerHTML=data.code;
+document.getElementById("paircode").innerHTML =
+data.code;
 
 
-status.innerHTML=
-"✅ Pair Code Generated";
+
+document.getElementById("status").innerHTML =
+"✅ Pair Code Ready";
 
 
 clearInterval(timer);
@@ -420,8 +438,8 @@ clearInterval(timer);
 }catch(e){
 
 
-status.innerHTML=
-"❌ Pairing failed";
+document.getElementById("status").innerHTML =
+"❌ Something went wrong";
 
 
 console.log(e);
@@ -438,12 +456,9 @@ console.log(e);
 </script>
 
 
-
 </body>
 
 </html>
-
-
 
 
 
