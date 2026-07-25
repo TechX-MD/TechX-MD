@@ -39,31 +39,37 @@ Example:
             }
 
 
-            // Handle ephemeral messages
-            let content = quoted;
+// Handle ephemeral messages
+let content = quoted;
 
-            if (content.ephemeralMessage) {
-                content = content.ephemeralMessage.message;
-            }
-
-
-            // Find View Once message
-            const viewOnce =
-                content.viewOnceMessageV2 ||
-                content.viewOnceMessage;
+if (content.ephemeralMessage) {
+    content = content.ephemeralMessage.message;
+}
 
 
-            if (!viewOnce) {
-                return await sock.sendMessage(
-                    from,
-                    {
-                        text:
-                        "❌ This is not a View Once message."
-                    },
-                    { quoted: m }
-                );
-            }
+// Find View Once message
+const viewOnce =
+    content.viewOnceMessageV2 ||
+    content.viewOnceMessageV2Extension ||
+    content.viewOnceMessage;
 
+
+if (!viewOnce) {
+
+    console.log(
+        "NOT VIEW ONCE:",
+        JSON.stringify(content, null, 2)
+    );
+
+    return await sock.sendMessage(
+        from,
+        {
+            text:
+            "❌ This is not a View Once message."
+        },
+        { quoted: m }
+    );
+}
 
             const message = viewOnce.message;
 
