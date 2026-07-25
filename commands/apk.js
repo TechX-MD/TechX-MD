@@ -1,55 +1,124 @@
-const api = require("../lib/api");
+const axios = require("axios");
 
 module.exports = {
     name: "apk",
+    aliases: ["app"],
 
     execute: async (sock, m, args) => {
 
-        const app = args.join(" ");
-
-        if (!app) {
-            return sock.sendMessage(
-                m.chat,
-                { text: "📱 Usage:\n.apk WhatsApp" },
-                { quoted: m }
-            );
-        }
-
         try {
 
-            const res = await api.get(
-                `/apk?q=${encodeURIComponent(app)}`
+            const appName = args.join(" ");
+
+            if (!appName) {
+                return await sock.sendMessage(
+                    m.chat,
+                    {
+                        text: "📦 Usage:\n.apk <app name>\n\nExample:\n.apk WhatsApp"
+                    },
+                    { quoted: m }
+                );
+            }
+
+            await sock.sendMessage(m.chat, {
+                react: {
+                    text: "⏳",
+                    key: m.key
+                }
+            });
+
+            const { data } = await axios.get(
+                "https://api.nexoracle.com/downloader/apk",
+                {
+                    params: {
+                        apikey: "free_key@maher_apis",
+                        q: appName
+                    },
+                    timeout: 60000
+                }
             );
 
-            const data = res.data;
+            if (!data || data.status !== 200 || !data.result) {
+                return await sock.sendMessage(
+                    m.chat,
+                    {
+                        text: "❌ APK not found."
+                    },
+                    { quoted: m }
+                );
+            }
+
+            const app = data.result;
 
             await sock.sendMessage(
                 m.chat,
                 {
-                    text:
-`╭━━〔 📱 APK SEARCH 〕━━⬣
-┃
-┃ 🔎 App:
-┃ ${app}
-┃
-┃ 📦 Result:
-┃ ${JSON.stringify(data, null, 2)}
-┃
-╰━━━━━━━━━━━━━━━━⬣
+                    image: {
+                        url: app.icon
+                    },
+                    caption:
+`📦 *${app.name}*
 
-🚀 TECHX-MD V3`
+📅 Last Update: ${app.lastup}
+📦 Package: ${app.package}
+📏 Size: ${app.size}
+
+⬇️ Downloading APK...`
                 },
                 { quoted: m }
             );
 
-        } catch(e){
+            const apk = await axios.get(app.dllink, {
+                responseType: "arraybuffer",
+                timeout: 120000
+            });
 
-            sock.sendMessage(
+            await sock.sendMessage(
                 m.chat,
-                { text:"❌ APK search failed." },
-                { quoted:m }
+                {
+                    document: Buffer.from(apk.data),
+                    mimetype: "application/vnd.android.package-archive",
+                    fileName: `${app.name}.apk`,
+                    caption:
+`📦 *APK Details*
+
+🔖 Name: ${app.name}
+📅 Updated: ${app.lastup}
+📦 Package: ${app.package}
+📏 Size: ${app.size}
+
+🚀 Powered by TECHX-MD`
+                },
+                { quoted: m }
             );
 
+            await sock.sendMessage(m.chat, {
+                react: {
+                    text: "✅",
+                    key: m.key
+                }
+            });
+
+        } catch (err) {
+
+            console.log(err);
+
+            await sock.sendMessage(
+                m.chat,
+                {
+                    text: "❌ Failed to download APK."
+                },
+                { quoted: m }
+            );
+
+            await sock.sendMessage(m.chat, {
+                react: {
+                    text: "❌",
+                    key: m.key
+                }
+            });
+
         }
+
     }
 };
