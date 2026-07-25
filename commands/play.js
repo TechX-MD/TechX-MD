@@ -1,9 +1,9 @@
-const fs = require("fs");
-const path = require("path");
 const axios = require("axios");
+const yts = require("yt-search");
 
 module.exports = {
     name: "play",
+    aliases: ["song"],
 
     execute: async (sock, m, args) => {
 
@@ -11,9 +11,9 @@ module.exports = {
 
         if (!query) {
             return sock.sendMessage(
-                m.key.remoteJid,
+                m.chat,
                 {
-                    text: "🎵 Use: .play song name"
+                    text: "🎵 Usage:\n.play <song name>\n.song <song name>"
                 },
                 { quoted: m }
             );
@@ -22,52 +22,123 @@ module.exports = {
         try {
 
             await sock.sendMessage(
-                m.key.remoteJid,
+                m.chat,
                 {
-                    text: `🔎 Searching: ${query}...`
-                },
-                { quoted: m }
+                    react: {
+                        text: "🎵",
+                        key: m.key
+                    }
+                }
             );
 
-            const api = await axios.get(
-                `http://localhost:3000/play?q=${encodeURIComponent(query)}`
-            );
+            const search = await yts(query);
 
-            if (!api.data.success) {
+            if (!search.videos.length) {
                 return sock.sendMessage(
-                    m.key.remoteJid,
+                    m.chat,
                     {
-                        text: "❌ Song not found"
+                        text: "❌ Song not found."
                     },
                     { quoted: m }
                 );
             }
 
-            const data = api.data;
+            const video = search.videos[0];
 
+            await sock.sendMessage(
+                m.chat,
+                {
+                    image: {
+                        url: video.thumbnail
+                    },
+                    caption:
+`🎵 *${video.title}*
 
-const filePath = path.join(
-    "/data/data/com.termux/files/home/TECHX-API/downloads",
-    data.audio.split("/").pop()
-);
+⏱ ${video.timestamp}
+👤 ${video.author.name}
 
-await sock.sendMessage(
-    m.key.remoteJid,
-    {
-        audio: fs.readFileSync(filePath),
-        mimetype: "audio/mpeg",
-        fileName: `${data.title}.mp3`
-    },
-    { quoted: m }
-);
+⬇️ Downloading...`
+                },
+                { quoted: m }
+            );
+
+            const apis = [
+
+`https://eliteprotech-apis.zone.id/ytdown?url=${encodeURIComponent(video.url)}&format=mp3`,
+
+`https://api.yupra.my.id/api/downloader/ytmp3?url=${encodeURIComponent(video.url)}`,
+
+`https://okatsu-rolezapiiz.vercel.app/downloader/ytmp3?url=${encodeURIComponent(video.url)}`
+
+            ];
+
+            let download = null;
+
+            for (const api of apis) {
+
+                try {
+
+                    const res = await axios.get(api, {
+                        timeout: 60000
+                    });
+
+                    if (res.data.downloadURL)
+                        download = res.data.downloadURL;
+
+                    else if (res.data.data?.download_url)
+                        download = res.data.data.download_url;
+
+                    else if (res.data.dl)
+                        download = res.data.dl;
+
+                    if (download) break;
+
+                } catch {}
+
+            }
+
+            if (!download) {
+
+                return sock.sendMessage(
+                    m.chat,
+                    {
+                        text: "❌ Download failed.\nTry again later."
+                    },
+                    { quoted: m }
+                );
+
+            }
+
+            await sock.sendMessage(
+                m.chat,
+                {
+                    audio: {
+                        url: download
+                    },
+                    mimetype: "audio/mpeg",
+                    fileName: `${video.title}.mp3`
+                },
+                { quoted: m }
+            );
+
+            await sock.sendMessage(
+                m.chat,
+                {
+                    react: {
+                        text: "✅",
+                        key: m.key
+                    }
+                }
+            );
+
         } catch (err) {
 
             console.log(err);
 
-            await sock.sendMessage(
-                m.key.remoteJid,
+            sock.sendMessage(
+                m.chat,
                 {
-                    text: "❌ Download failed"
+                    text: "❌ Failed to download music."
                 },
                 { quoted: m }
             );
@@ -75,4 +146,5 @@ await sock.sendMessage(
         }
 
     }
+
 };
