@@ -1,15 +1,14 @@
 const axios = require("axios");
 const yts = require("yt-search");
-const play = require("play-dl");
 
 const APIS = [
-    "https://apis.davidcyriltech.my.id/download/ytmp4?url=",
-    "https://api.giftedtech.web.id/api/download/ytmp4?url="
+    "https://apis.davidcyriltech.my.id/download/ytmp3?url=",
+    "https://api.giftedtech.web.id/api/download/ytmp3?url="
 ];
 
 module.exports = {
-    name: "ytmp4",
-    aliases: ["ytvideo", "ytv", "yt", "youtube"],
+    name: "song",
+    aliases: ["play", "music"],
 
     execute: async (sock, m, args) => {
 
@@ -21,11 +20,12 @@ module.exports = {
                 from,
                 {
                     text:
-`🎬 *YouTube Video Downloader*
+`🎵 *Song Downloader*
 
 Usage:
-.ytmp4 <YouTube URL>
-.ytmp4 <video name>`
+.song <song name>
+.play <song name>
+.song <YouTube URL>`
                 },
                 { quoted: m }
             );
@@ -40,75 +40,45 @@ Usage:
                 }
             });
 
+            let video = null;
             let url = query;
-            let title = "YouTube Video";
-            let thumbnail = null;
-            let duration = "";
-            let durationSec = 0;
-            let channel = "Unknown";
 
-            // Search if not URL
             if (
                 !query.includes("youtube.com") &&
                 !query.includes("youtu.be")
             ) {
 
-                const search = await yts(query);
+                const result = await yts(query);
 
-                if (!search.videos.length) {
+                if (!result.videos.length) {
                     return sock.sendMessage(
                         from,
                         {
-                            text: "❌ No video found."
+                            text: "❌ No song found."
                         },
                         { quoted: m }
                     );
                 }
 
-                const video = search.videos[0];
-
+                video = result.videos[0];
                 url = video.url;
-                title = video.title;
-                thumbnail = video.thumbnail;
-                duration = video.timestamp;
 
             }
 
-            // Get metadata
-            try {
-
-                const info = await play.video_info(url);
-
-                title = info.video_details.title || title;
-                channel = info.video_details.channel?.name || channel;
-                duration = info.video_details.durationRaw || duration;
-                durationSec = info.video_details.durationInSec || 0;
-
-            } catch {}
-
-            if (durationSec > 600) {
-                return sock.sendMessage(
-                    from,
-                    {
-                        text: "❌ Video is longer than 10 minutes."
-                    },
-                    { quoted: m }
-                );
-            }
-
-            if (thumbnail) {
+            if (video) {
 
                 await sock.sendMessage(
                     from,
                     {
-                        image: { url: thumbnail },
+                        image: {
+                            url: video.thumbnail
+                        },
                         caption:
-`🎬 *${title}*
+`🎵 *${video.title}*
 
-👤 ${channel}
-⏱ ${duration}
+⏱ ${video.timestamp}
 
-Downloading...`
+Downloading audio...`
                     },
                     { quoted: m }
                 );
@@ -116,6 +86,7 @@ Downloading...`
             }
 
             let downloadUrl = null;
+            let title = video?.title || "song";
 
             for (const api of APIS) {
 
@@ -123,7 +94,9 @@ Downloading...`
 
                     const res = await axios.get(
                         api + encodeURIComponent(url),
-                        { timeout: 30000 }
+                        {
+                            timeout: 30000
+                        }
                     );
 
                     const data = res.data;
@@ -135,6 +108,10 @@ Downloading...`
                         data?.url ||
                         data?.link;
 
+                    title =
+                        data?.result?.title ||
+                        title;
+
                     if (downloadUrl) break;
 
                 } catch {}
@@ -145,30 +122,26 @@ Downloading...`
                 throw new Error("Download link not found.");
             }
 
-            // Download to Buffer
-            const video = await axios.get(
+            // Download audio as Buffer
+            const audio = await axios.get(
                 downloadUrl,
                 {
                     responseType: "arraybuffer",
                     timeout: 120000,
-                    maxBodyLength: Infinity,
-                    maxContentLength: Infinity
+                    maxContentLength: Infinity,
+                    maxBodyLength: Infinity
                 }
             );
 
-            const buffer = Buffer.from(video.data);
+            const buffer = Buffer.from(audio.data);
 
             await sock.sendMessage(
                 from,
                 {
-                    video: buffer,
-                    mimetype: "video/mp4",
-                    fileName: title + ".mp4",
-                    caption:
-`🎬 *${title}*
-
-👤 ${channel}
-⏱ ${duration}`
+                    audio: buffer,
+                    mimetype: "audio/mpeg",
+                    fileName: title + ".mp3",
+                    ptt: false
                 },
                 { quoted: m }
             );
@@ -182,12 +155,13 @@ Downloading...`
 
         } catch (err) {
 
-            console.error("YTMP4 ERROR:", err);
+            console.error("SONG ERROR:", err);
 
             await sock.sendMessage(
                 from,
                 {
-                    text: "❌ Failed to download video."
+                    text:
+                    "❌ Failed to download song."
                 },
                 { quoted: m }
             );
