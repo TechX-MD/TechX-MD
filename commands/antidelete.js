@@ -8,7 +8,23 @@ module.exports = {
 
     execute: async (sock, m, args) => {
 
-        const isOwner = true; // replace with your owner checker
+        if (!global.botData) {
+            global.botData = {
+                antiDelete: {}
+            };
+        }
+
+        if (!global.botData.antiDelete) {
+            global.botData.antiDelete = {};
+        }
+
+        if (!global.saveBotData) {
+            global.saveBotData = () => {};
+        }
+
+
+        const isOwner = true;
+
 
         return handleAntideleteCommand(
             sock,
