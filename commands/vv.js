@@ -1,16 +1,13 @@
-const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
+const { downloadContentFromMessage } = require("@whiskeysockets/baileys");
 
 module.exports = {
     name: "vv",
-    aliases: ["viewonce", "vview"],
+    aliases: ["viewonce", "readviewonce"],
 
-    execute: async (sock, m, args) => {
-
+    execute: async (sock, m) => {
         const from = m.chat || m.key.remoteJid;
 
         try {
-
-            // Reaction
             await sock.sendMessage(from, {
                 react: {
                     text: "👁️",
@@ -18,168 +15,119 @@ module.exports = {
                 }
             });
 
+            const quoted =
+                m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
 
-            // Get quoted message
-const quoted =
-    m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-
-
-console.log(
-    "QUOTED DEBUG:",
-    JSON.stringify(quoted, null, 2)
-);
-
-
-if (!quoted) {
-    return sock.sendMessage(
-        from,
-        {
-            text: "❌ No quoted message found."
-        },
-        { quoted:m }
-    );
-}
-
-// Handle ephemeral messages
-let content = quoted;
-
-if (content.ephemeralMessage) {
-    content = content.ephemeralMessage.message;
-}
-
-
-// Find View Once message
-const viewOnce =
-    content.viewOnceMessageV2 ||
-    content.viewOnceMessageV2Extension ||
-    content.viewOnceMessage;
-
-
-if (!viewOnce) {
-
-    console.log(
-        "NOT VIEW ONCE:",
-        JSON.stringify(content, null, 2)
-    );
-
-    return await sock.sendMessage(
-        from,
-        {
-            text:
-            "❌ This is not a View Once message."
-        },
-        { quoted: m }
-    );
-}
-
-            const message = viewOnce.message;
-
-
-            let type = null;
-            let media = null;
-
-
-            if (message.imageMessage) {
-                type = "image";
-                media = message.imageMessage;
+            if (!quoted) {
+                return await sock.sendMessage(
+                    from,
+                    {
+                        text: "❌ Reply to a View Once image, video or audio."
+                    },
+                    { quoted: m }
+                );
             }
 
-            else if (message.videoMessage) {
-                type = "video";
-                media = message.videoMessage;
+            let content = quoted;
+
+            if (content.ephemeralMessage) {
+                content = content.ephemeralMessage.message;
             }
 
-            else if (message.audioMessage) {
-                type = "audio";
-                media = message.audioMessage;
-            }
+            // Detect all View Once formats
+            let message;
 
-
-            if (!type || !media) {
+            if (content.viewOnceMessageV2) {
+                message = content.viewOnceMessageV2.message;
+            } else if (content.viewOnceMessageV2Extension) {
+                message = content.viewOnceMessageV2Extension.message;
+            } else if (content.viewOnceMessage) {
+                message = content.viewOnceMessage.message;
+            } else if (
+                content.imageMessage?.viewOnce ||
+                content.videoMessage?.viewOnce ||
+                content.audioMessage?.viewOnce
+            ) {
+                message = content;
+            } else {
+                console.log(
+                    "NOT VIEW ONCE:",
+                    JSON.stringify(content, null, 2)
+                );
 
                 return await sock.sendMessage(
                     from,
                     {
-                        text:
-                        "❌ Unsupported View Once media."
+                        text: "❌ This is not a View Once message."
                     },
                     { quoted: m }
                 );
-
             }
 
+            let media;
+            let type;
 
-            // Download media
-            const stream =
-                await downloadContentFromMessage(
-                    media,
-                    type
+            if (message.imageMessage) {
+                media = message.imageMessage;
+                type = "image";
+            } else if (message.videoMessage) {
+                media = message.videoMessage;
+                type = "video";
+            } else if (message.audioMessage) {
+                media = message.audioMessage;
+                type = "audio";
+            } else {
+                return await sock.sendMessage(
+                    from,
+                    {
+                        text: "❌ Unsupported View Once media."
+                    },
+                    { quoted: m }
                 );
+            }
 
+            const stream = await downloadContentFromMessage(media, type);
 
             let buffer = Buffer.from([]);
 
-
             for await (const chunk of stream) {
-
-                buffer = Buffer.concat([
-                    buffer,
-                    chunk
-                ]);
-
+                buffer = Buffer.concat([buffer, chunk]);
             }
 
-
-
-            // Send back media
-
             if (type === "image") {
-
                 await sock.sendMessage(
                     from,
                     {
                         image: buffer,
-                        caption:
-                        "✅ View Once Image Recovered"
+                        caption: "✅ View Once Image Recovered"
                     },
                     { quoted: m }
                 );
-
             }
 
-
-            else if (type === "video") {
-
+            if (type === "video") {
                 await sock.sendMessage(
                     from,
                     {
                         video: buffer,
-                        caption:
-                        "✅ View Once Video Recovered"
+                        caption: "✅ View Once Video Recovered"
                     },
                     { quoted: m }
                 );
-
             }
 
-
-            else if (type === "audio") {
-
+            if (type === "audio") {
                 await sock.sendMessage(
                     from,
                     {
                         audio: buffer,
-                        mimetype:
-                        media.mimetype || "audio/mp4"
+                        ptt: media.ptt || false,
+                        mimetype: media.mimetype || "audio/ogg; codecs=opus"
                     },
                     { quoted: m }
                 );
-
             }
 
-
-
-            // Success reaction
             await sock.sendMessage(from, {
                 react: {
                     text: "✅",
@@ -187,26 +135,16 @@ if (!viewOnce) {
                 }
             });
 
-
-
-        } catch (error) {
-
-            console.log(
-                "VV COMMAND ERROR:",
-                error
-            );
-
+        } catch (err) {
+            console.error("VV ERROR:", err);
 
             await sock.sendMessage(
                 from,
                 {
-                    text:
-                    "❌ Failed to recover View Once media."
+                    text: "❌ Failed to recover View Once media."
                 },
                 { quoted: m }
             );
-
         }
-
     }
 };
