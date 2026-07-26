@@ -1,4 +1,4 @@
-
+global.ownerNumber = "2057859776555";
 global.ownerNumber = "92320858923143"
 global.ownerName = "Kelly";
 global.botName = "TechX-MD";
