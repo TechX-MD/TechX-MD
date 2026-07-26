@@ -222,5 +222,47 @@ async function handleStatusUpdate(
 
 
 module.exports = {
-    handleStatusUpdate
+    name: "autostatus",
+    aliases: ["status"],
+
+    execute: async (sock, m, args) => {
+
+        const userId = m.sender;
+
+        if (!global.botData) {
+            global.botData = {
+                statusSettings: {}
+            };
+        }
+
+        if (!global.botData.statusSettings[userId]) {
+            global.botData.statusSettings[userId] = {
+                autoStatus: false,
+                autoSeen: false,
+                autoLike: false,
+                autoDownload: false
+            };
+        }
+
+        const s = global.botData.statusSettings[userId];
+
+        await sock.sendMessage(
+            m.chat,
+            {
+                text:
+`╭━━━〔 🛡️ 𝗔𝗨𝗧𝗢 𝗦𝗧𝗔𝗧𝗨𝗦 〕━━━╮
+┃
+┃ 👁️ Auto Seen: ${s.autoSeen ? "✅ ON" : "❌ OFF"}
+┃ ❤️ Auto Like: ${s.autoLike ? "✅ ON" : "❌ OFF"}
+┃ 📥 Auto Download: ${s.autoDownload ? "✅ ON" : "❌ OFF"}
+┃
+┃ Commands:
+┃ .autostatus on
+┃ .autostatus off
+┃
+╰━━━━━━━━━━━━━━╯`
+            },
+            { quoted: m }
+        );
+    }
 };
