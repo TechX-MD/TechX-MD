@@ -3,10 +3,24 @@ module.exports = {
 
     execute: async (sock, m) => {
 
-        const sender = m.key.participant || m.key.remoteJid;
-        const owner = global.owner + "@s.whatsapp.net";
+        const sender =
+            (m.key.participant || m.key.remoteJid)
+            .split(":")[0]
+            .replace("@lid", "")
+            .replace("@s.whatsapp.net", "");
 
-        if (sender !== owner) {
+
+        const owners = Array.isArray(global.ownerNumber)
+            ? global.ownerNumber
+            : [global.ownerNumber];
+
+
+        const isOwner = owners.some(num =>
+            sender === String(num).replace(/[^0-9]/g, "")
+        );
+
+
+        if (!isOwner) {
             return sock.sendMessage(
                 m.key.remoteJid,
                 {
