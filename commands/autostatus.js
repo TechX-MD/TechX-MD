@@ -225,44 +225,85 @@ module.exports = {
     name: "autostatus",
     aliases: ["status"],
 
-    execute: async (sock, m, args) => {
+execute: async (sock, m, args) => {
 
-        const userId = m.sender;
+    const userId = m.sender;
 
-        if (!global.botData) {
-            global.botData = {
-                statusSettings: {}
-            };
-        }
+    if (!global.botData) {
+        global.botData = {
+            statusSettings: {}
+        };
+    }
 
-        if (!global.botData.statusSettings[userId]) {
-            global.botData.statusSettings[userId] = {
-                autoStatus: false,
-                autoSeen: false,
-                autoLike: false,
-                autoDownload: false
-            };
-        }
+    if (!global.botData.statusSettings[userId]) {
+        global.botData.statusSettings[userId] = {
+            autoStatus: false,
+            autoSeen: false,
+            autoLike: false,
+            autoDownload: false
+        };
+    }
 
-        const s = global.botData.statusSettings[userId];
+    const settings = global.botData.statusSettings[userId];
 
-        await sock.sendMessage(
+    const action = args[0]?.toLowerCase();
+
+
+    if (action === "on") {
+
+        settings.autoStatus = true;
+        settings.autoSeen = true;
+        settings.autoLike = true;
+        settings.autoDownload = true;
+
+        return await sock.sendMessage(
             m.chat,
             {
-                text:
+                text: "✅ *AUTO STATUS ACTIVATED*\n\n👁️ Seen: ON\n❤️ Like: ON\n📥 Download: ON"
+            },
+            { quoted: m }
+        );
+
+    }
+
+
+    if (action === "off") {
+
+        settings.autoStatus = false;
+        settings.autoSeen = false;
+        settings.autoLike = false;
+        settings.autoDownload = false;
+
+        return await sock.sendMessage(
+            m.chat,
+            {
+                text: "❌ *AUTO STATUS DEACTIVATED*"
+            },
+            { quoted: m }
+        );
+
+    }
+
+
+    await sock.sendMessage(
+        m.chat,
+        {
+            text:
 `╭━━━〔 🛡️ 𝗔𝗨𝗧𝗢 𝗦𝗧𝗔𝗧𝗨𝗦 〕━━━╮
 ┃
-┃ 👁️ Auto Seen: ${s.autoSeen ? "✅ ON" : "❌ OFF"}
-┃ ❤️ Auto Like: ${s.autoLike ? "✅ ON" : "❌ OFF"}
-┃ 📥 Auto Download: ${s.autoDownload ? "✅ ON" : "❌ OFF"}
+┃ 👁️ Auto Seen: ${settings.autoSeen ? "✅ ON" : "❌ OFF"}
+┃ ❤️ Auto Like: ${settings.autoLike ? "✅ ON" : "❌ OFF"}
+┃ 📥 Auto Download: ${settings.autoDownload ? "✅ ON" : "❌ OFF"}
 ┃
 ┃ Commands:
 ┃ .autostatus on
 ┃ .autostatus off
 ┃
 ╰━━━━━━━━━━━━━━╯`
-            },
-            { quoted: m }
-        );
-    }
+        },
+        { quoted: m }
+    );
+
+}
+
 };
