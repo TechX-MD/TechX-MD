@@ -55,6 +55,12 @@ if (activeConnections.has(number)) {
         });
     }
 
+if (activeConnections.has(number)) {
+    return res.json({
+        status:false,
+        message:"Connection already active"
+    });
+}
 activeConnections.set(number, true);
 users.set(number, true);
 
