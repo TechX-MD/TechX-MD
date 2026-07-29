@@ -8,6 +8,26 @@ app.use(express.static("public"));
 
 const users = new Map();
 const activeConnections = new Map();
+
+const fs = require("fs");
+
+if (fs.existsSync("./sessions")) {
+
+    fs.readdirSync("./sessions").forEach(number => {
+
+        console.log("🔄 Restoring session:", number);
+
+        connect(number)
+            .catch(err => {
+                console.log(
+                    "Restore error:",
+                    err.message
+                );
+            });
+
+    });
+
+}
 app.post("/pair", async (req, res) => {
 
     let number = req.body.number;
